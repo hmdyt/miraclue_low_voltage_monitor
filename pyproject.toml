@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "miraclue_low_voltage_monitor"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+PyVISA = "^1.12.0"
+PyMySQL = "^1.0.2"
+PyVISA-py = "^0.5.3"
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.1.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

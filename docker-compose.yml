@@ -1,0 +1,14 @@
+version: '3'
+services:
+  s1:
+    build: .
+    volumes:
+      - .:/workdir
+    tty: true
+    entrypoint: sh -c 'poetry install && poetry run python miraclue_low_voltage_monitor/main.py'
+  dev:
+    build: .
+    volumes:
+      - .:/workdir
+    command: sh -c 'poetry install && poetry remove --dev pytest && poetry add --dev pytest && bash'
+    tty: true
