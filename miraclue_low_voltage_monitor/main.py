@@ -1,22 +1,31 @@
-from miraclue_low_voltage_monitor.LowVoltageHandler import LowVoltageHandler
+from miraclue_low_voltage_monitor.IT6322A_handler import IT6322A_handler
 from miraclue_low_voltage_monitor.Monitor import Monitor
-import threading
+import miraclue_low_voltage_monitor.util as util
+import miraclue_low_voltage_monitor.config as config
+import time
 
-SERIAL_NUMBER = '802071092767310443'
-LVH_HOST = 'localhost'
-LVH_PORT = 12345
+handler = IT6322A_handler(
+	config.IT6322A_socket_server['IP'],
+	config.IT6322A_socket_server['port']
+)
+monitor = Monitor(
+	config.current_thresholds,
+	config.sleep_time
+)
 
-low_vol_handler = LowVoltageHandler(LVH_HOST, LVH_PORT, SERIAL_NUMBER)
-monitor = Monitor(LVH_HOST, LVH_PORT, 1)
+counter = 0
+a_cycle = config.base_interval * config.monitor_interbal * config.DB_interval
 
-def exec_low_vol_handler():
-	low_vol_handler.start()
+while True:
+	voltages = [handler.get_voltage(i) for i in range(3)]
+	currents = [handler.get_current(i) for i in range(3)]
+	util.tprint(f'voltages: {voltages}')
+	util.tprint(f'currents: {currents}')
 
-def exec_monitor():
-	monitor.start()
+	if counter % config.monitor_interbal == 0:
+		monitor.check_current(currents)
 
-low_vol_handler_thread = threading.Thread(target=exec_low_vol_handler)
-monitor_thread = threading.Thread(target=exec_monitor)
-
-low_vol_handler_thread.start()
-monitor_thread.start()
+	counter += 1
+	if counter % a_cycle == 0:
+		counter = 0
+	time.sleep(config.base_interval)
