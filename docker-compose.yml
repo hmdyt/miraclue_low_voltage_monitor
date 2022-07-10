@@ -7,6 +7,7 @@ services:
       - .:/workdir
     tty: true
     entrypoint: sh -c 'poetry install && poetry run python miraclue_low_voltage_monitor/main.py'
+    
   dev:
     container_name: dev
     build: .
