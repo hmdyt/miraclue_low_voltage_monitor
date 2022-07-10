@@ -25,3 +25,8 @@ channel_list = ["FIR","SECO","THI"]
 encoding_method = 'utf-8'
 decoding_method = 'utf-8'
 buffer_size = 1024
+
+log_file = './log'
+log_file_max = '1 GB'
+logfile_loglevel = 'DEBUG'
+stdout_loglevel = 'INFO'

@@ -1,5 +1,6 @@
 import time
 from typing import List
+from loguru import logger
 import miraclue_low_voltage_monitor.config as config
 import miraclue_low_voltage_monitor.util as util
 from miraclue_low_voltage_monitor.IT6322A_handler import IT6322A_handler
@@ -14,17 +15,17 @@ class Monitor:
         )
 
     def check_current(self, currents) -> None:
-        util.tprint('start checking current')
+        logger.info('start checking current')
         is_exceed = False
         for (th_current, current) in zip(self._current_thresholds, currents):
             if current > th_current:
                 is_exceed = True
         if is_exceed:
-            util.tprint(f'exceed software current limit!')
-            util.tprint(f'current: {currents}, th_current: {self._current_thresholds}')
+            logger.warning(f'exceed software current limit!')
+            logger.warning(f'current: {currents}, th_current: {self._current_thresholds}')
             self._sleep()
         else:
-            util.tprint(f'currents are normal')
+            logger.success(f'currents are normal')
    
     def _sleep(self) -> None:
         self._handler.set_state(0)

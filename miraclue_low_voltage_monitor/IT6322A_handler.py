@@ -1,4 +1,5 @@
 import socket
+from loguru import logger
 
 import miraclue_low_voltage_monitor.config as config
 import miraclue_low_voltage_monitor.util as util
@@ -18,8 +19,8 @@ class IT6322A_handler:
         self._socket.send(query.encode(config.encoding_method))
         response = self._socket.recv(config.buffer_size).decode(config.decoding_method)
         self._socket.close()
-        util.tprint(f'send ---> {query}')
-        util.tprint(f'recv <--- {response.strip()}')
+        logger.debug(f'send ---> {query}')
+        logger.debug(f'recv <--- {response.strip()}')
         return response
     
     def _set_channel(self, channel: int) -> str:
@@ -41,12 +42,12 @@ class IT6322A_handler:
     
     def set_voltage(self, channel: int, voltage: float) -> str:
         if not -0.1 < voltage < 4:
-            util.tprint_error(f'inputted {voltage}V is invalid voltage')
+            logger.error(f'inputted {voltage}V is invalid voltage')
             return "-1"
         self._set_channel(channel)
         voltage = util.parse_to_str(voltage)
         status_code = self._send_query(f'wVOLT {voltage}')
-        util.tprint(f'set CH{channel + 1} {voltage}V')
+        logger.info(f'set CH{channel + 1} {voltage}V')
         return status_code
 
     def get_state(self) -> bool:
@@ -56,7 +57,7 @@ class IT6322A_handler:
 
     def set_state(self, state: bool) -> str:
         if (state != 0) and (state != 1):
-            util.tprint_error(f'inputted command is invalid')
+            logger.error(f'inputted command is invalid')
             return "-1"
         status_code = self._send_query(f'wOUTP {state}')
         return status_code

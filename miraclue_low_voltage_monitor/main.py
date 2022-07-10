@@ -3,6 +3,7 @@ from miraclue_low_voltage_monitor.DataBaseDispatcher import DataBaseDispatcher
 from miraclue_low_voltage_monitor.Monitor import Monitor
 import miraclue_low_voltage_monitor.util as util
 import miraclue_low_voltage_monitor.config as config
+from loguru import logger
 import time
 import signal
 import sys
@@ -24,14 +25,19 @@ def init_voltages(handler):
 		handler.set_voltage(i, config.set_voltages[i])
 	handler.set_state(1)
 
+def init_logger():
+	logger.remove()
+	logger.add(config.log_file, level=config.logfile_loglevel, rotation=config.log_file_max)
+	logger.add(sys.stdout, level=config.stdout_loglevel)
+
 def start(handler, monitor, dispatcher):
 	counter = 0
 	a_cycle = config.base_interval * config.monitor_interbal * config.DB_interval
 	while True:
 		voltages = [handler.get_voltage(i) for i in range(3)]
 		currents = [handler.get_current(i) for i in range(3)]
-		util.tprint(f'voltages: {voltages}')
-		util.tprint(f'currents: {currents}')
+		logger.info(f'voltages: {voltages}')
+		logger.info(f'currents: {currents}')
 
 		if counter % config.monitor_interbal == 0:
 			monitor.check_current(currents)
@@ -44,6 +50,7 @@ def start(handler, monitor, dispatcher):
 		time.sleep(config.base_interval)
 
 def main():
+	init_logger()
 	handler, monitor, dispatcher = init()
 	init_voltages(handler)
 	start(handler, monitor, dispatcher)

@@ -1,4 +1,5 @@
 import pymysql
+from loguru import logger
 import miraclue_low_voltage_monitor.util as util
 
 class DataBaseDispatcher:
@@ -30,4 +31,4 @@ class DataBaseDispatcher:
         query_tuple = tuple(query_tuple)
         self._cursor.execute(sql_query, query_tuple)
         self._db_connection.commit()
-        util.tprint('save to DB')
+        logger.success('save to DB')

@@ -1,6 +1,8 @@
 import argparse
 import time
 
+from loguru import logger
+
 import miraclue_low_voltage_monitor.config as config
 import miraclue_low_voltage_monitor.util as util
 from miraclue_low_voltage_monitor.IT6322A_handler import IT6322A_handler
@@ -23,11 +25,11 @@ def main():
     time.sleep(1)
 
     voltages = [handler.get_voltage(i) for i in range(3)]
-    util.tprint(f"current voltages are {voltages}")
+    logger.info(f"current voltages are {voltages}")
 
     handler.set_state(int(args.state))
     output_state = handler.get_state()
-    util.tprint(f"output state is now {output_state}")
+    logger.info(f"output state is now {output_state}")
 
 if __name__ == '__main__':
     main()

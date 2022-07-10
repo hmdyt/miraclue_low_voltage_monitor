@@ -9,6 +9,7 @@ python = "^3.8"
 PyVISA = "^1.12.0"
 PyMySQL = "^1.0.2"
 PyVISA-py = "^0.5.3"
+loguru = "^0.6.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1.2"
