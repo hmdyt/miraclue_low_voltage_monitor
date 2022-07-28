@@ -7,7 +7,7 @@ base_interval = 1 # [sec]
 monitor_interbal = 3 # monitor_interbal * base_interval [sec]
 DB_interval = 10 # DB_interval * base_interval [sec]
 
-current_thresholds = [3, 3, 3]
+current_thresholds = [100, 4, 4]
 sleep_time = 3
 
 database_info = {
@@ -19,7 +19,7 @@ database_info = {
     'table': 'IT6332A_1'
 }
 
-set_voltages = [1, 1, 1]
+set_voltages = [3.3, 2.5, 2.5] # [V]
 
 channel_list = ["FIR","SECO","THI"]
 encoding_method = 'utf-8'
