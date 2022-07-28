@@ -16,18 +16,20 @@ class Monitor:
 
     def check_current(self, currents) -> None:
         logger.info('start checking current')
-        is_exceed = False
-        for (th_current, current) in zip(self._current_thresholds, currents):
-            if current > th_current:
-                is_exceed = True
-        if is_exceed:
-            logger.warning(f'exceed software current limit!')
-            logger.warning(f'current: {currents}, th_current: {self._current_thresholds}')
-            self._sleep()
-        else:
-            logger.success(f'currents are normal')
+        is_exceed_chs = [
+            current > th_current for (th_current, current) in zip(self._current_thresholds, currents)
+        ]
+        for i, is_exceed in enumerate(is_exceed_chs):
+            ch = i + 1
+            if is_exceed:
+                logger.warning(f'exceed software current limit! (ch{ch})')
+                self._sleep(i)
+            else:
+                logger.success(f'ch {ch} current is normal')
    
-    def _sleep(self) -> None:
-        self._handler.set_state(0)
+    def _sleep(self, i) -> None:
+        # i means channel - 1 (0-indexed)
+        logger.warning(f'sleep ch{i + 1} {self._sleep_time} sec')
+        self._handler.set_voltage(i, 0)
         time.sleep(self._sleep_time)
-        self._handler.set_state(1)
+        self._handler.set_voltage(i, config.set_voltages[i])
