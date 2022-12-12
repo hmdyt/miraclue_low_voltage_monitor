@@ -3,5 +3,11 @@ WORKDIR /workdir
 
 ENV POETRY_HOME /opt/poetry
 ENV PATH $PATH:$POETRY_HOME/bin
-RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
+RUN curl -sSL https://install.python-poetry.org | python -
 RUN poetry config virtualenvs.create false
+
+COPY ./miraclue_low_voltage_monitor /workdir/miraclue_low_voltage_monitor
+COPY ./pyproject.toml /workdir/pyproject.toml
+COPY ./poetry.lock /workdir/poetry.lock
+
+RUN poetry install
